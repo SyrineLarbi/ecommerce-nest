@@ -7,7 +7,9 @@ import { ICategory } from './interface/Category.interface';
 
 @Injectable()
 export class CategoriesService {
-  constructor(  @InjectModel('categories') private CategoryModel : Model<ICategory> ){}
+  constructor(
+    @InjectModel('categories') private CategoryModel: Model<ICategory>,
+  ) {}
 
   async createCategory(
     createCategoryDto: CreateCategoryDto,
@@ -19,8 +21,8 @@ export class CategoriesService {
 
   async getAllCategories(): Promise<ICategory[]> {
     const CategoryData = await this.CategoryModel.find().select('-__v');
-    if (!CategoryData || CategoryData.length == 0){
-      throw new NotFoundException ('Categories data not found!');
+    if (!CategoryData || CategoryData.length == 0) {
+      throw new NotFoundException('Categories data not found!');
     }
     return CategoryData;
   }
@@ -29,8 +31,8 @@ export class CategoriesService {
     const existingCategory = await this.CategoryModel.findById(
       CategoryId,
     ).exec();
-    if (!existingCategory){
-      throw new NotFoundException (`Category ${CategoryId} does not exist!`);
+    if (!existingCategory) {
+      throw new NotFoundException(`Category ${CategoryId} does not exist!`);
     }
     return existingCategory;
   }
@@ -46,15 +48,17 @@ export class CategoriesService {
       { new: true },
     );
     if (!existingCategory) {
-      throw new NotFoundException(`Category #${CategoryId} not found`)
+      throw new NotFoundException(`Category #${CategoryId} not found`);
     }
     return existingCategory;
   }
 
   async deleteCategory(CategoryId: string): Promise<ICategory> {
-    const deletedCategory=await this.CategoryModel.findByIdAndDelete(CategoryId);
-    if (!deletedCategory){
-      throw new NotFoundException (`Category #${CategoryId} not found`);
+    const deletedCategory = await this.CategoryModel.findByIdAndDelete(
+      CategoryId,
+    );
+    if (!deletedCategory) {
+      throw new NotFoundException(`Category #${CategoryId} not found`);
     }
     return deletedCategory;
   }

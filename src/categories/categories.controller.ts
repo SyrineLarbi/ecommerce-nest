@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Get, Post, Body, Param, Delete, Res, Put } from '@nestjs/common';
+import {Controller, HttpStatus, Get, Post, Body, Param, Delete, Res, Put } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -21,29 +21,29 @@ export class CategoriesController {
       });
     } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-      status: 400,
-      message: 'Error : Category not created!' + err,
-      data:null,
-    });
+        status: 400,
+        message: 'Error : Category not created!' + err,
+        data: null,
+      });
+    }
   }
-}
 
   @Get()
   async getCategories(@Res() response) {
-    try{
+    try {
       const CategoriesData = await this.categoriesService.getAllCategories();
       return response.status(HttpStatus.OK).json({
-        message:'All categories fetched successfully!!',
+        message: 'All categories fetched successfully!!',
         status: HttpStatus.OK,
         data: CategoriesData,
       });
-    } catch (err){
+    } catch (err) {
       return response.status(err.status).json({
         message: err.response,
         status: HttpStatus.BAD_REQUEST,
         data: null,
       });
-    } 
+    }
   }
 
   @Get('/:id')
