@@ -11,12 +11,14 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
 @Controller('users')
 export class UserController {
@@ -71,6 +73,7 @@ export class UserController {
       });
     }
   }
+  @UseGuards(AccessTokenGuard)
   @Get()
   async getuser(@Res() response) {
     try {

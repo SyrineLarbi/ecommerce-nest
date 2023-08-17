@@ -6,8 +6,8 @@ import { Customer } from "src/customers/entities/customer.entity";
 
 @Schema ({timestamps:true, discriminatorKey:'role'})
 export class User {
-    @Prop({required:true, enum:[Customer.name]})
-    role: string;
+    // @Prop({required:true, enum:[Customer.name]})
+    // role: string;
 
     @Prop({required : true})
     name: string;

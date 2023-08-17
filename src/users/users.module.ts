@@ -13,5 +13,6 @@ import { Customer, CustomerSchema } from 'src/customers/entities/customer.entity
     ]}])],
   controllers: [UserController],
   providers: [UsersService],
+  exports: [UsersService]
 })
 export class UsersModule {}

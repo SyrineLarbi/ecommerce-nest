@@ -32,9 +32,9 @@ export class UsersService {
 
   async getUser(username: string): Promise<IUser> {
     const existingUser = await this.UserModel.findOne({username})
-    if (!existingUser) {
-      throw new NotFoundException(`User ${username} does not exist!`);
-    }
+    // if (!existingUser) {
+    //   throw new NotFoundException(`User ${username} does not exist!`);
+    // }
     return existingUser;
   }
 
