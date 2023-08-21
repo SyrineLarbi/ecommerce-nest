@@ -20,7 +20,7 @@ export class CategoriesService {
   }
 
   async getAllCategories(): Promise<ICategory[]> {
-    const CategoryData = await this.CategoryModel.find().select('-__v');
+    const CategoryData = await this.CategoryModel.find().select('-__v').populate("subCategories");
     if (!CategoryData || CategoryData.length == 0) {
       throw new NotFoundException('Categories data not found!');
     }
