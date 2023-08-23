@@ -41,7 +41,7 @@ export class ProductController {
   @Get()
   async getprods(@Res() response) {
     try {
-      const productsData = await this.productService.getAllProducts;
+      const productsData = await this.productService.getAllProducts();
       return response.status(HttpStatus.OK).json({
         message: 'All products fetched successfully!!',
         status: HttpStatus.OK,

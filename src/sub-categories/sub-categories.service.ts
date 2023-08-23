@@ -21,7 +21,7 @@ export class SubCategoriesService {
   }
 
   async getAllSubCategories(): Promise<ISubCategory[]> {
-    const subCategoryData = await this.subCategoryModel.find().populate("category").select('-__v');
+    const subCategoryData = await this.subCategoryModel.find().populate("category").populate("products").select('-__v');
     if (!subCategoryData || subCategoryData.length == 0) {
       throw new NotFoundException('SubCategories data not found!');
     }
@@ -29,9 +29,7 @@ export class SubCategoriesService {
   }
 
   async getsubCategory(subCategoryId: string): Promise<ISubCategory> {
-    const existingsubCategory = await this.subCategoryModel.findById(
-      subCategoryId,
-    ).exec();
+    const existingsubCategory = await this.subCategoryModel.findById(subCategoryId).populate('category').exec();
     if (!existingsubCategory) {
       throw new NotFoundException(`subCategory ${subCategoryId} does not exist!`);
     }
