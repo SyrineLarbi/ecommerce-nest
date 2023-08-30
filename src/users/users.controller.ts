@@ -19,6 +19,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import * as argon2 from 'argon2';
 
 @Controller('users')
 export class UserController {
@@ -73,7 +74,7 @@ export class UserController {
       });
     }
   }
-  @UseGuards(AccessTokenGuard)
+  // @UseGuards(AccessTokenGuard)
   @Get()
   async getuser(@Res() response) {
     try {
@@ -95,7 +96,7 @@ export class UserController {
   @Get('/:id')
   async getprod(@Res() response, @Param('id') UserId: string) {
     try {
-      const existingUser = await this.UserService.getUser(UserId);
+      const existingUser = await this.UserService.findById(UserId);
       return response.status(HttpStatus.OK).json({
         message: 'User found',
         data: existingUser,
@@ -128,6 +129,11 @@ export class UserController {
   ) {
     try {
       if (file == undefined || file == null) {
+        if(updateUserDto.password==undefined){
+          updateUserDto.password= (await((this.UserService.findById(UserId)))).password
+        }else {
+          updateUserDto.password=await argon2.hash(updateUserDto.password)
+        }
         updateUserDto.photo = (await (this.UserService.findById(UserId))).photo;
 
         const existingUser = await this.UserService.updateUser(
@@ -140,6 +146,11 @@ export class UserController {
           status: HttpStatus.OK,
         });
       } else {
+        if (updateUserDto.password == undefined){
+          updateUserDto.password= (await((this.UserService.findById((UserId))))).password
+        } else {
+          updateUserDto.password = await argon2.hash(updateUserDto.password)
+        }
         updateUserDto.photo = file.filename;
         const existingUser = await this.UserService.updateUser(
           UserId,

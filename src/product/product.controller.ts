@@ -1,8 +1,8 @@
-import {Controller, HttpStatus, Get, Post, Body, Param, Delete, Res, Put,UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {Controller, HttpStatus, Get, Post, Body, Param, Delete, Res, Put,UploadedFiles, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor,FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
 
@@ -75,18 +75,39 @@ export class ProductController {
   }
 
   @Put('/:id')
+  @UseInterceptors(
+    FilesInterceptor('files',10, {
+      storage: diskStorage({
+        destination: './upload/products',
+        filename: (request, file, callback) =>
+          callback(null, `${new Date().getTime()}-${file.originalname}`),
+      }),
+    }),
+  )
   async updateprod(
     @Res() response,
     @Param('id') productId: string,
     @Body() updateproductDto: UpdateProductDto,
+    @UploadedFiles() files: Express.Multer.File[]
   ) {
     try {
+      if(files == undefined || files == null){
+        updateproductDto.images = (await this.productService.getproduct(productId)).images
+      
       const existingproduct = await this.productService.updateproduct(productId,updateproductDto);
       return response.status(HttpStatus.OK).json({
         message: 'product updated Successfully!',
         data: existingproduct,
         status: HttpStatus.OK,
       });
+    } else{
+      updateproductDto.images = files.map(images =>images.filename);
+      const existingproduct = await this.productService.updateproduct(productId,updateproductDto);
+      return response.status(HttpStatus.OK).json({
+        message: 'product updated Successfully!',
+        data: existingproduct,
+        status: HttpStatus.OK,
+      });}
     } catch (err) {
       return response.status(err.status).json({
         message: err.response,
